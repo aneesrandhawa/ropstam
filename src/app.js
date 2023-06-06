@@ -35,12 +35,15 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Sample API',
+      title: 'Ropstam API',
       version: '1.0.0',
     },
   },
-  apis: ['./src/routes/user.route.js']
+  apis: ['./routes/user.route.js']
 };
+
+
+
 
 const specs = swaggerJsdoc(options);
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(specs));
