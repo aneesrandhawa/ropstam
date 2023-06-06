@@ -11,6 +11,7 @@ const router = express.Router();
  *     parameters:
  *      - name: Firstname
  *      - name: Lastname
+ *      - name: Username
  *     schema:
  *     type: string
  *     responses:
