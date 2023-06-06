@@ -38,17 +38,17 @@ function generateRandomPassword() {
   
 
 const registerUser = async(req, res) => {
-    const {firstName,lastName,username} = req.body
-    const verifyEmail = await User.findOne({  Username: username  })
+    const {firstName,lastName,email} = req.body
+    const verifyEmail = await User.findOne({  Username: email  })
     if (!verifyEmail) {
         
         const password = generateRandomPassword();
-        sendEMail(username , password)
+        sendEMail(email , password)
         const hashPass = await bcrypt.hash(password, 13)
         const user = new User({
             FirstName: firstName,
             LastName: lastName,
-            Username: username,
+            Username: email,
             Password: hashPass
         })
         await user.save();

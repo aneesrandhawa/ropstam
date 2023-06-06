@@ -46,8 +46,7 @@ const specs = swaggerJsdoc(options);
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/', route)
 
-const ipAddress = '192.168.1.18'
-app.listen(config.app.port, ipAddress ,console.log(`Server run...at port ${config.app.port}
+app.listen(config.app.port ,console.log(`Server run...at port ${config.app.port}
 http://127.0.0.1:${config.app.port}/
 http://localhost:${config.app.port}/`));
 
