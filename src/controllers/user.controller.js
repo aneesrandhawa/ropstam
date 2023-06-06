@@ -5,7 +5,7 @@ const config = require('../config/config')
 const bcrypt = require('bcrypt')
 
 
-function sendEMail(email,pass) {
+function sendEMail(email, pass) {
     const mailOptions = {
         from: config.nodeMailer.user,
         to: email,
@@ -13,12 +13,14 @@ function sendEMail(email,pass) {
         text: 'This is a Welcome email from Ropstam!',
         html: `<h1>Welcome</h1><p>This is your Email & Password!</p><p><b>Email: ${email}</b></p><p><b>Password: ${pass}</b></p>`
     };
-    
+
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-        console.log('Error occurred:', error.message);
+            console.log('Error occurred:', error.message);
+            return false;
         } else {
-        console.log('Email sent successfully!');
+            console.log('Email sent successfully!');
+            return true;
         }
     });
 }
@@ -29,41 +31,49 @@ function generateRandomPassword() {
     let password = "";
     const length = 8;
     for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * charset.length);
-      password += charset[randomIndex];
+        const randomIndex = Math.floor(Math.random() * charset.length);
+        password += charset[randomIndex];
     }
-    
-    return password;
-  }
-  
 
-const registerUser = async(req, res) => {
-    const {firstName,lastName,email} = req.body
-    const verifyEmail = await User.findOne({  Username: email  })
+    return password;
+}
+
+
+const registerUser = async (req, res) => {
+    const { firstName, lastName, email } = req.body
+    const verifyEmail = await User.findOne({ Username: email })
     if (!verifyEmail) {
-        
+
         const password = generateRandomPassword();
-        sendEMail(email , password)
-        const hashPass = await bcrypt.hash(password, 13)
-        const user = new User({
-            FirstName: firstName,
-            LastName: lastName,
-            Username: email,
-            Password: hashPass
-        })
-        await user.save();
-        res.status(201).json({"message": "Password has been sent to your mail."})
+        const isEmailSent = sendEMail(email, password)
+        if (isEmailSent) {
+            try{
+                const hashPass = await bcrypt.hash(password, 13)
+                const user = new User({
+                    FirstName: firstName,
+                    LastName: lastName,
+                    Username: email,
+                    Password: hashPass
+                })
+                await user.save();
+                res.status(201).json({ "message": "Password has been sent to your mail." })
+            }catch{
+                res.status(500).json({ "message": "An error occured." })
+            }
+        }else{
+            res.status(400).json({ "message": "Invalid Email." })
+        }
     } else {
-        res.status(302).json({"message": "User already exist."})
+        res.status(409).json({ "message": "User already exist." })
     }
 }
 
-const login = async(req, res) => {
-    const {username,password} = req.body;
+const login = async (req, res) => {
+    const { username, password } = req.body;
     const verifyUser = await User.findOne({ Username: username })
     if (!verifyUser) {
         res.send("User not found")
-    } 
+    }
     else {
         const verifypass = await bcrypt.compare(password, verifyUser.Password)
         if (verifypass) {
@@ -84,7 +94,7 @@ const login = async(req, res) => {
                 data: {
                     error: "Invalid Credentials"
                 }
-            })            
+            })
         }
     }
 }
