@@ -52,9 +52,9 @@ const registerUser = async(req, res) => {
             Password: hashPass
         })
         await user.save();
-        res.send(`User is registered`)
+        res.status(201).json({"message": "Password has been sent to your mail."})
     } else {
-        res.send("User email already exist")
+        res.status(302).json({"message": "User already exist."})
     }
 }
 
