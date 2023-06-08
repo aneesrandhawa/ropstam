@@ -69,10 +69,10 @@ const registerUser = async (req, res) => {
 }
 
 const login = async (req, res) => {
-    const { username, password } = req.body;
-    const verifyUser = await User.findOne({ Username: username })
+    const { email, password } = req.body;
+    const verifyUser = await User.findOne({ Username: email })
     if (!verifyUser) {
-        res.send("User not found")
+        res.status(404).json({"message":"User not found"})
     }
     else {
         const verifypass = await bcrypt.compare(password, verifyUser.Password)
@@ -80,8 +80,8 @@ const login = async (req, res) => {
             const token = jwt.sign({ id: verifyUser._id }, config.jwt.secret)
             res.cookie('jwt', token, { httpOnly: true, maxAge: 20000 })
             res.status(200).json({
-                status: true,
-                data: {
+                "message": "Successfully Log in",
+                "data": {
                     ID: verifyUser._id,
                     Name: `${verifyUser.FirstName} ${verifyUser.LastName}`,
                     Username: verifyUser.Username
@@ -90,10 +90,7 @@ const login = async (req, res) => {
 
         } else {
             res.status(500).json({
-                status: false,
-                data: {
-                    error: "Invalid Credentials"
-                }
+                "message": "Invalid Credentials"
             })
         }
     }
