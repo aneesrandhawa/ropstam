@@ -9,7 +9,12 @@ const userRouter = require('./routes/user.route')
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const app = express();
-app.use(cors())
+const corsOptions = {
+  origin: 'http://localhost:3000/' // Replace with your frontend origin
+};
+
+app.use(cors(corsOptions));
+
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.static('public'))
