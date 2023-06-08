@@ -9,9 +9,9 @@ const router = express.Router();
  *     summary: Register a User
  *     description: Register a User
  *     parameters:
- *      - name: Firstname
- *      - name: Lastname
- *      - name: Username
+ *      - name: firstName
+ *      - name: lastName
+ *      - name: email
  *     schema:
  *     type: string
  *     responses:
@@ -22,8 +22,8 @@ const router = express.Router();
  *     summary: User Log in
  *     description: Log in
  *     parameters:
- *      - name: Username
- *      - name: Password
+ *      - name: username
+ *      - name: password
  *     schema:
  *     type: string 
  *     responses:

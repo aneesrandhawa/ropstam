@@ -46,7 +46,7 @@ const registerUser = async (req, res) => {
 
         const password = generateRandomPassword();
         const isEmailSent = sendEMail(email, password)
-        if (isEmailSent) {
+        // if (isEmailSent) {
             try{
                 const hashPass = await bcrypt.hash(password, 13)
                 const user = new User({
@@ -60,9 +60,9 @@ const registerUser = async (req, res) => {
             }catch{
                 res.status(500).json({ "message": "An error occured." })
             }
-        }else{
-            res.status(400).json({ "message": "Invalid Email." })
-        }
+        // }else{
+        //     res.status(400).json({ "message": "Invalid Email." })
+        // }
     } else {
         res.status(409).json({ "message": "User already exist." })
     }
